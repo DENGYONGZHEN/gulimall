@@ -20,10 +20,4 @@
         <module>gulimall-common</module>
     </modules>
 
-    <properties>
-        <java.version>1.8</java.version>
-        <spring-cloud.version>2021.0.5</spring-cloud.version>
-    </properties>
-
-
 </project>
