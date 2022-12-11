@@ -1,7 +1,7 @@
 package com.atguigu.gulimall.product;
 
 
-import com.aliyun.oss.OSSClient;
+
 import com.atguigu.gulimall.product.entity.BrandEntity;
 import com.atguigu.gulimall.product.service.BrandService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -21,28 +21,6 @@ import java.util.List;
 
     @Autowired
     BrandService brandService;
-     @Autowired
-     OSSClient ossClient;
-
-  /**
-   * 文件上传步骤
-   * 1、引入starter，具体引入在common模块
-   * 2、在yml配置文件中配置相关的key，secret以及endpoint信息
-   * 3、使用OSSClient进行相关操作
-   * @throws FileNotFoundException
-   */
-  @Test
-     public void testUpload()throws FileNotFoundException{
-       InputStream inputStream = new FileInputStream("D:\\photo.jpg");
-       ossClient.putObject("gulimall-tokyo","photo.jpg",inputStream);
-       ossClient.shutdown();
-       System.out.println("上传成功");
-     }
-
-
-
-
-
 
     @Test
       public void contextLoads() {
