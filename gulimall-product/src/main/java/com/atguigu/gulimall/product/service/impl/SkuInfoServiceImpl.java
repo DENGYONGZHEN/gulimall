@@ -1,6 +1,9 @@
 package com.atguigu.gulimall.product.service.impl;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -11,6 +14,7 @@ import com.atguigu.common.utils.Query;
 import com.atguigu.gulimall.product.dao.SkuInfoDao;
 import com.atguigu.gulimall.product.entity.SkuInfoEntity;
 import com.atguigu.gulimall.product.service.SkuInfoService;
+import org.springframework.util.StringUtils;
 
 
 @Service("skuInfoService")
@@ -21,6 +25,55 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
         IPage<SkuInfoEntity> page = this.page(
                 new Query<SkuInfoEntity>().getPage(params),
                 new QueryWrapper<SkuInfoEntity>()
+        );
+
+        return new PageUtils(page);
+    }
+
+    @Override
+    public void saveSkuInfo(SkuInfoEntity skuInfoEntity) {
+        this.baseMapper.insert(skuInfoEntity);
+    }
+
+    @Override
+    public PageUtils queryPageByCondition(Map<String, Object> params) {
+        QueryWrapper<SkuInfoEntity> skuInfoEntityQueryWrapper = new QueryWrapper<>();
+        String key = (String) params.get("key");
+        if(!StringUtils.isEmpty(key)){
+            skuInfoEntityQueryWrapper.and((wrapper)->{
+                wrapper.eq("sku_id",key).or().like("sku_name",key);
+            });
+        }
+        String catelogId = (String) params.get("catelogId");
+        if(!StringUtils.isEmpty(catelogId) &&!"0".equalsIgnoreCase(catelogId)){
+
+            skuInfoEntityQueryWrapper.eq("catalog_id",catelogId);
+        }
+        String brandId = (String) params.get("brandId");
+        if(!StringUtils.isEmpty(brandId) &&!"0".equalsIgnoreCase(brandId)){
+            skuInfoEntityQueryWrapper.eq("brand_id",brandId);
+        }
+        String min = (String) params.get("min");
+        if(!StringUtils.isEmpty(min)){
+            skuInfoEntityQueryWrapper.ge("price", min);
+        }
+        String max = (String) params.get("max");
+        if(!StringUtils.isEmpty(max)){
+            try{
+                BigDecimal bigDecimal = new BigDecimal(max);
+                if(bigDecimal.compareTo(new BigDecimal("0")) ==1){
+                    skuInfoEntityQueryWrapper.le("price",max);
+                }
+            }catch (Exception E){
+
+            }
+
+
+        }
+
+        IPage<SkuInfoEntity> page = this.page(
+                new Query<SkuInfoEntity>().getPage(params),
+                skuInfoEntityQueryWrapper
         );
 
         return new PageUtils(page);
